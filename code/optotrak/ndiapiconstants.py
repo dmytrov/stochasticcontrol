@@ -1,0 +1,509 @@
+
+class NDI(object):
+    # * Messages IDs for fast message system.
+    FAST_REGISTER_SENSOR = 0
+    FAST_SENSOR_DATA = 1
+    FAST_ODAU_DATA = 2
+    FAST_FAKE_DATA = 3
+    FAST_SENSOR_SHUTDOWN = 4
+    FAST_BUFFER_DATA = 5
+
+    # * Message IDs for regular messages
+    ADD_NEW_NODE_MESSAGE = 1
+    ADD_NEW_PROCESS_MESSAGE = 2
+    SETUP_MONITOR_MESSAGE = 3
+    SEND_CONFIG_INFO_MESSAGE = 4
+    END_CONFIG_INFO_MESSAGE = 5
+    SETUP_LINK_MESSAGE = 6
+    ERROR_MESSAGE = 7
+    DELETE_PROCESS_MESSAGE = 8
+
+    INITIALIZE_TIMEOUT_MESSAGE = 16
+    ADD_CHILD_NODE_MESSAGE = 17
+    CHILD_CONFIG_COMPLETE_MESSAGE = 18
+    BROADCAST_NODES_MESSAGE = 19
+    BROADCAST_NODES_DONE_MESSAGE = 20
+    BROADCAST_PROCS_MESSAGE = 21
+    BROADCAST_PROCS_DONE_MESSAGE = 22
+
+    # * System messages
+    STANDARD_ERROR_MESSAGE = 256
+    PROC_STOP_MESSAGE = 257
+    SUCCESSFUL_MESSAGE = 258
+    FAILURE_MESSAGE = 259
+    DEBUG_MESSAGE = 299
+
+    # * Defines for different commands shared between OPTOTRAK and OPTOSCOPE
+    OPTO_ERROR_REQUEST_MESSAGE = 1000
+    OPTO_ERROR_REQUEST_COMMAND = 1001
+    OPTO_STATUS_REQUEST_MESSAGE = 1002
+
+    # * SCO-95-0015
+    # * Added OPTO_NODE_INFO_MESSAGE
+    # * Message will return an OptoNodeInfoStruct for use in
+    # * an about box.
+    OPTO_NODE_INFO_MESSAGE = 1003
+    OPTO_TX_ONE_FRAME_MESSAGE = 1004
+    OPTO_TX_MANY_FRAME_MESSAGE = 1006
+    OPTO_LATEST_CENTROID_FRAME_MESSAGE = 1008
+    OPTO_LATEST_FRAME_MESSAGE = 1010
+
+    # * Messages specific to the OPTOTRAK data proprietor
+    OPTO_LATEST_RAW_FRAME_MESSAGE = 1012
+
+    # * Commands specific to the OPTOTRAK data proprietor for realtime option.
+    OPTO_LATEST_RIGID_FRAME_MESSAGE = 1014
+
+    # * Messages specific to the OPTOTRAK data proprietor
+    OPTO_TRANSFORM_DATA_MESSAGE = 1016
+    OPTO_LATEST_WAVE_FRAME_MESSAGE = 1018
+
+    # * New messages for NEXT rather than LATEST frame of data
+    OPTO_NEXT_FRAME_MESSAGE = 1019
+    OPTO_NEXT_RAW_FRAME_MESSAGE = 1020
+    OPTO_NEXT_RIGID_FRAME_MESSAGE = 1021
+    OPTO_NEXT_CENTROID_FRAME_MESSAGE = 1022
+
+    # * Defines for different commands shared between OPTOTRAK and OPTOSCOPE
+    OPTO_ERROR_MESSAGE = 1050
+    OPTO_ERROR_COMMAND = 1051
+
+    # * The following are message ids you could receive from either the
+    # * OPTOTRAK or the OPTOSCOPE
+    OPTO_SUCCESSFUL_MESSAGE = 1052
+    OPTO_SUCCESSFUL_COMMAND = 1053
+
+    OPTO_UNSUCCESSFUL_MESSAGE = 1054
+    OPTO_UNSUCCESSFUL_COMMAND = 1055
+
+    OPTO_DATA_BUFFER_MESSAGE = 1056
+    OPTO_LATEST_BUFFER_MESSAGE = 1058
+
+    # * Commands specific to the OPTOTRAK data proprietor for realtime option.
+    OPTO_LATEST_RIGID_MESSAGE = 1060
+
+    # * Messages specific to the OPTOTRAK data proprietor
+    OPTO_TRANS_BUFFER_MESSAGE = 1062
+
+    # * Commands specific to the OPTOTRAK data proprietor for realtime option.
+    OPTOTRAK_RIGID_STATUS_MESSAGE = 1064
+
+    # * Defines for different commands shared between OPTOTRAK and OPTOSCOPE
+    OPTOTRAK_REGISTER_MESSAGE = 1102
+    OPTOTRAK_REGISTER_COMMAND = 1103
+
+    OPTOTRAK_ADD_CAMERA_MESSAGE = 1104
+    OPTOTRAK_ADD_CAMERA_COMMAND = 1105
+
+    OPTOTRAK_CALIBRATE_MESSAGE = 1106
+    OPTOTRAK_CALIBRATE_COMMAND = 1107
+
+    # * Defines for commands to pass to the OPTOTRAK Administrator.
+    OPTOTRAK_MODIFY_SYSTEM_MESSAGE = 1108
+    OPTOTRAK_MODIFY_SYSTEM_COMMAND = 1109
+
+    OPTOTRAK_SETUP_COLL_MESSAGE = 1110
+    OPTOTRAK_SETUP_COLL_COMMAND = 1111
+
+    OPTOTRAK_STOP_FIRING_MESSAGE = 1112
+
+    OPTOTRAK_START_FIRING_MESSAGE = 1114
+    OPTOTRAK_START_FIRING_COMMAND = 1115
+
+    OPTOTRAK_START_BUFF_MESSAGE = 1116
+    OPTOTRAK_START_BUFF_COMMAND = 1117
+
+    OPTOTRAK_STOP_BUFF_MESSAGE = 1118
+    OPTOTRAK_STOP_BUFF_COMMAND = 1119
+
+    OPTOTRAK_SHUTDOWN_MESSAGE = 1120
+    OPTOTRAK_SHUTDOWN_COMMAND = 1121
+
+    # * Commands specific to the OPTOTRAK data proprietor for realtime option.
+    OPTOTRAK_ADD_RIGID_MESSAGE = 1122
+    OPTOTRAK_DEL_RIGID_MESSAGE = 1124
+    OPTOTRAK_SET_RIGID_MESSAGE = 1126
+    OPTOTRAK_ROTATE_RIGIDS_MESSAGE = 1128
+    OPTOTRAK_STOP_ROTATING_MESSAGE = 1130
+
+    # * Defines for commands to pass to the OPTOTRAK Administrator.
+    OPTOTRAK_UNREGISTER_MESSAGE = 1132
+    OPTOTRAK_UNREGISTER_COMMAND = 1133
+    OPTOTRAK_TRIGGER_COLLECTION_MESSAGE = 1134
+    OPTOTRAK_TRIGGER_COLLECTION_COMMAND = 1135
+
+    # * Commands for internal messaging inside the OPTOTRAK system.
+    OPTOTRAK_CAMERA_NAMES_MESSAGE = 1136
+    OPTOTRAK_CAMERA_NAMES_COMMAND = 1137
+
+    # * Commands specific to the OPTOTRAK data proprietor for realtime option.
+    OPTOTRAK_ADD_NORMALS_MESSAGE = 1138
+    OPTOTRAK_GET_RIG_STATUS_MESSAGE = 1140
+
+    # * Defines for commands to pass to the OPTOTRAK Administrator.
+    OPTOTRAK_STROBER_TABLE_MESSAGE = 1142
+
+    # * Commands for internal messaging inside the OPTOTRAK system.
+    OPTOTRAK_CALIBRATING_MESSAGE = 1150
+    OPTOTRAK_CALIBRATING_COMMAND = 1151
+
+    OPTOTRAK_DONE_CALIB_MESSAGE = 1152
+    OPTOTRAK_DONE_CALIB_COMMAND = 1153
+
+    # * Defines for commands to pass to the OPTOTRAK Administrator.
+    OPTOTRAK_STATUS_MESSAGE = 1154
+    OPTOTRAK_STATUS_COMMAND = 1155
+
+    OPTOTRAK_STATUS_CHANGED_MESSAGE = 1158
+    OPTOTRAK_STATUS_CHANGED_COMMAND = 1159
+
+    # * Commands for internal messaging inside the OPTOTRAK system.
+    OPTOTRAK_FAKE_DATA_MESSAGE = 1160
+    OPTOTRAK_FAKE_DATA_COMMAND = 1161
+
+    OPTOTRAK_END_FAKE_DATA_MESSAGE = 1162
+    OPTOTRAK_END_FAKE_DATA_COMMAND = 1163
+
+    OPTOTRAK_SETUP_DRC_MESSAGE = 1166
+    OPTOTRAK_SETUP_DRC_COMMAND = 1167
+
+    OPTOTRAK_MARKER_RATIO_MESSAGE = 1168
+    OPTOTRAK_MARKER_RATIO_COMMAND = 1169
+
+    OPTOTRAK_SET_DDC_PARMS_MESSAGE = 1170
+
+    # * Messages for flash rom stuff.
+    OPTOTRAK_ERASE_ROM_MESSAGE = 1172
+    OPTOTRAK_ERASE_ROM_COMMAND = 1173
+    OPTOTRAK_READ_ROM_MESSAGE = 1174
+    OPTOTRAK_READ_ROM_COMMAND = 1175
+    OPTOTRAK_WRITE_ROM_MESSAGE = 1176
+    OPTOTRAK_WRITE_ROM_COMMAND = 1177
+    OPTOTRAK_VPP_ROM_MESSAGE = 1178
+    OPTOTRAK_VPP_ROM_COMMAND = 1179
+
+    # * Message back from ODAU II or other device to update
+    # * OPTOTRAK Frame rate according to what can be generated.
+    OPTOTRAK_ACTUAL_RATE_MESSAGE = 1180
+
+    # * Commands sent to and from internal components of the optotrak
+    # * system.
+    OPTO_REGISTER_EVENT_MESSAGE = 1190
+
+    # * Commands for interfacing with the ODAU unit.
+    OPTOSCOPE_SETUP_COLL_MESSAGE = 1202
+    OPTOSCOPE_SETUP_COLL_COMMAND = 1203
+
+    # * Commands for internal messaging inside the OPTOTRAK system.
+    OPTOSCOPE_START_BSYNC_MESSAGE = 1204
+    OPTOSCOPE_START_BSYNC_COMMAND = 1205
+
+    # * Commands for interfacing with the ODAU unit.
+    OPTOSCOPE_START_BUFF_MESSAGE = 1206
+    OPTOSCOPE_START_BUFF_COMMAND = 1207
+    OPTOSCOPE_STOP_BUFF_MESSAGE = 1208
+    OPTOSCOPE_STOP_BUFF_COMMAND = 1209
+
+    # * Commands for internal messaging inside the OPTOTRAK system.
+    OPTOSCOPE_STOP_BSYNC_MESSAGE = 1210
+    OPTOSCOPE_STOP_BSYNC_COMMAND = 1211
+
+    # * Commands for interfacing with the ODAU unit.
+    OPTOSCOPE_SHUTDOWN_MESSAGE = 1212
+    OPTOSCOPE_SHUTDOWN_COMMAND = 1213
+
+    # * New Messages for ODAU II
+    OPTOSCOPE_ANALOG_OUT_MESSAGE = 1214
+    OPTOSCOPE_DIGITAL_OUT_MESSAGE = 1216
+
+    # * New Messages
+    OPTOSCOPE_SET_TIMER_MESSAGE = 1217
+    OPTOSCOPE_LOAD_FIFO_MESSAGE = 1218
+    OPTOSCOPE_STATUS_MESSAGE = 1250
+
+    # * Commands sent to and from internal components of the optotrak
+    # * system.
+    # * These are the message id's used to communicate with
+    # * the sensor subsystem
+    SENSOR_INITIALIZED_MESSAGE = 2000
+    SENSOR_SETUP_COLL_MESSAGE = 2001
+    SENSOR_START_GEN_MESSAGE = 2002
+    SENSOR_STOP_GEN_MESSAGE = 2003
+    SENSOR_SETUP_COMPLETE_MESSAGE = 2004
+    SENSOR_GEN_COMPLETE_MESSAGE = 2005
+    SENSOR_CALIBRATE_MESSAGE = 2006
+    SENSOR_TEST_CCD_CHARGE_MESSAGE = 2007
+    SENSOR_EX_ONE_MARKER_MESSAGE = 2008
+    SENSOR_ROUTE_DATA_MESSAGE = 2009
+    SENSOR_ROUTE_COMPLETE_MESSAGE = 2010
+    SENSOR_CENTROID_DATA_MESSAGE = 2011
+    SENSOR_CALIB_COMPLETE_MESSAGE = 2012
+    SENSOR_TERM_DATA_MESSAGE = 2013
+    SENSOR_ROUTE2_DATA_MESSAGE = 2014
+    SENSOR_CALIB_REQUIRED_MESSAGE = 2015
+
+    # * These are general internal messages
+    INTL_ROUTE_SETUP_FAILED = 2050
+    INTL_ROUTE_TYPE_UNKNOWN = 2051
+    INTL_UNRECOGNIZED_COMMAND = 2052
+    INTL_SETUP_ZERO_MARKERS = 2053
+    INTL_SETUP_FAILED = 2054
+    INTL_OUT_OF_MEMORY = 2055
+
+    # * These are the message id's used to communicate with
+    # * a data buffer/consolidator process.
+    DATABUFF_INITIALIZED_MESSAGE = 2200
+    DATABUFF_TX_STATUS_MESSAGE = 2201
+    DATABUFF_STATUS_MESSAGE = 2202
+    DATABUFF_DATA_PACKET_MESSAGE = 2203
+    DATABUFF_DATA_BUFFER_MESSAGE = 2204
+    DATABUFF_TX_ONE_FRAME_MESSAGE = 2205
+    DATABUFF_TX_MANY_FRAME_MESSAGE = 2206
+    DATABUFF_TX_ALL_FRAME_MESSAGE = 2207
+    DATABUFF_TX_STREAM_MESSAGE = 2208
+    DATABUFF_TERM_STREAM_MESSAGE = 2209
+    DATABUFF_TERM_TX_MESSAGE = 2210
+    DATABUFF_FLUSH_MESSAGE = 2211
+    DATABUFF_TERMINATE_MESSAGE = 2212
+    DATABUFF_SETUP_COLL_MESSAGE = 2213
+    DATABUFF_SETUP_COMPLETE_MESSAGE = 2214
+    DATABUFF_START_COLL_MESSAGE = 2215
+    DATABUFF_START_COMPLETE_MESSAGE = 2216
+    DATABUFF_STOP_COLL_MESSAGE = 2217
+    DATABUFF_COLL_COMPLETE_MESSAGE = 2218
+
+    # * These are the message id's used to communicate with
+    # * a courier process.
+    COURIER_READY_MESSAGE = 2300
+
+    # * These are the message id's used to communicate with the
+    # * data proprietor process.
+    DATAPROP_INITIALIZED_MESSAGE = 2400
+    DATAPROP_NEW_NODE_MESSAGE = 2401
+    DATAPROP_ADD_CAMERA_MESSAGE = 2402
+    DATAPROP_SEND_DATA_MESSAGE = 2403
+    DATAPROP_STREAM_DATA_MESSAGE = 2404
+
+    # * These are the message id's used to communicate with
+    # * a null data consumer process.
+    NULLDATA_INITIALIZED_MESSAGE = 2500
+    NULLDATA_START_COLL_MESSAGE = 2501
+    NULLDATA_COLL_COMPLETE_MESSAGE = 2502
+    NULLDATA_TERMINATE_MESSAGE = 2503
+
+    # * These are the message id's used to communicate with a data
+    # * worker process
+    DATAWORK_INITIALIZED_MESSAGE = 2600
+    DATAWORK_START_COLL_MESSAGE = 2601
+    DATAWORK_START_COMPLETE_MESSAGE = 2602
+    DATAWORK_STOP_COLL_MESSAGE = 2603
+    DATAWORK_COLL_COMPLETE_MESSAGE = 2604
+    DATAWORK_TERMINATE_MESSAGE = 2605
+    DATAWORK_SETUP_COLL_MESSAGE = 2606
+    DATAWORK_SETUP_COMPLETE_MESSAGE = 2607
+    DATAWORK_SHUTDOWN_MESSAGE = 2608
+
+    # * These are the message id's used to communicate with a notifier
+    # * process
+    NOTIFIER_INITIALIZED_MESSAGE = 2700
+    NOTIFIER_SET_TIME_MESSAGE = 2701
+    NOTIFIER_TIME_OUT_MESSAGE = 2702
+
+    # * These are the message id's used for communication between the OPTOTRAK
+    # * Administrator and the OPTOSCOPE Administrator.
+    OSCOPE_INITIALIZED_MESSAGE = 2800
+    OSCOPE_SETUP_INFO_MESSAGE = 2801
+
+    # * SCO-95-0015
+    # * New Messages for ODAU II
+    OSCOPE2_INITIALIZED_MESSAGE = 2802
+    OSCOPE2_START_GEN_MESSAGE = 2803
+    OSCOPE2_SET_SYNC_RATE_MESSAGE = 2804
+
+    # * These are general internal messages
+    INTERNAL_HEAP_DUMP_MESSAGE = 3000
+    INTERNAL_CHECK_STACK_MESSAGE = 3001
+    SETUP_COLL_MESSAGE = 3002
+    SHUTDOWN_COLL_MESSAGE = 3003
+
+    # * Commands for internal messaging inside the OPTOTRAK system.
+    # * Waveform messages.
+    OPTOTRAK_WAVEFORM_REQUEST = 5001
+    OPTOTRAK_SET_WAVEFORM_MESSAGE = 5002
+    OPTOTRAK_ALTER_WAVEFORM_MESSAGE = 5003
+    OPTOTRAK_SENSOR_WAVEFORM_DATA = 5004
+    OPTOTRAK_DETERMINE_CENTROID = 5005
+    OPTOTRAK_SENSOR_DATA_MESSAGE = 5006
+    SET_SIGNAL_INJECTOR = 5007
+    UNSET_SIGNAL_INJECTOR = 5008
+
+    # * Commands for general statistics a process wants to return
+    # * and have printed.
+    GEN_STAT_REQUEST_MESSAGE = 7800
+    GEN_STAT_DATA_MESSAGE = 7801
+
+    # * Commands for obtaining strober statistics.
+    STROBER_STAT_MESSAGE = 8000
+    STROBER_SET_BUSYWAIT_MESSAGE = 8001
+
+    # * System maximums
+    MAX_PROCESSES = 32
+    MAX_NODES = 64
+    MAX_SYSTEM_MESSAGE = 255
+    UNKNOWN_PROCESS = 32
+    STRING_LENGTH = 81
+    MAX_NAME_LENGTH = 40
+
+    # * System flag defines for message.SystemFlags
+    ALLOCATED_MESSAGE = 1
+    EXTERNAL_MESSAGE = 2
+    MULTIPLE_DATA_MESSAGE = 8
+    TRANSPUTER_BOOTER = "TransputerBooter"
+
+    # * Constants defining limits on certain objects in the OPTOTRAK system.
+    MAX_SENSORS = 10
+    MAX_OPTOSCOPES = 4
+    MAX_RIGID_BODIES = 10
+    MAX_HOST_RIGID_BODIES = 85
+    MAX_SENSOR_NAME_LENGTH = 20
+    OPTOTRAK_MAX_MARKERS = 256
+
+    OPTO_HW_TYPE_SENSOR = 0x4D41435F  # '_CAM'
+    OPTO_HW_TYPE_SU = 0x55535953  # 'SYSU'
+    OPTO_HW_TYPE_ODAU = 0x5541444F  # 'ODAU'
+    OPTO_HW_TYPE_REALTIME = 0x5D544C52  # 'RLTM'
+
+    # * These are flags and constants used by OPTOTRAK and OPTOSCOPE for any of
+    # * the buffer messages
+    OPTO_BUFFER_OVERRUN_FLAG = 0x0001
+    OPTO_FRAME_OVERRUN_FLAG = 0x0002
+    OPTO_NO_PRE_FRAMES_FLAG = 0x0004
+
+    OPTOSCOPE_MAX_CHANNELS_IN = 16
+    OPTOSCOPE_MIN_CHANNEL_NUM = 1
+    OPTOSCOPE_MAX_TABLE_ENTRIES = 16 + 1
+
+    ODAU_DIGITAL_PORT_OFF = 0x00
+    ODAU_DIGITAL_INPB_INPA = 0x11
+    ODAU_DIGITAL_OUTPB_INPA = 0x21
+    ODAU_DIGITAL_OUTPB_OUTPA = 0x22
+    ODAU_DIGITAL_OFFB_MUXA = 0x04
+    ODAU_DIGITAL_INPB_MUXA = 0x14
+    ODAU_DIGITAL_OUTPB_MUXA = 0x24
+
+    # * SCO-97-0020
+    # * New constants for user timer mode
+    ODAU_TIMER_ONE_SHOT = 1
+    ODAU_TIMER_RATE_GEN = 2
+    ODAU_TIMER_SQUARE_WAVE = 3
+    ODAU_TIMER_RETRIGGER = 4
+
+    # * SCO-97-0020
+    # *  New constants for selecting which timer to set
+    ODAU_TIMER2 = 2
+
+    # * Constants used to test ODAU digital port bits
+    ODAU_DGTL_PT_OFF = 0x00
+    ODAU_DGTL_PT_IN = 0x01
+    ODAU_DGTL_PT_OUT = 0x02
+    ODAU_DGTL_PT_MUX = 0x04
+    ODAU_DGTL_INPUT = 0x11
+
+    # * These are flags which are used with rigid bodies and the determination
+    # * of their transformations.
+    OPTOTRAK_UNDETERMINED_FLAG = 0x0001
+    OPTOTRAK_STATIC_XFRM_FLAG = 0x0002
+    OPTOTRAK_STATIC_RIGID_FLAG = 0x0004
+    OPTOTRAK_CONSTANT_RIGID_FLAG = 0x0008
+    OPTOTRAK_NO_RIGID_CALCS_FLAG = 0x0010
+    OPTOTRAK_DO_RIGID_CALCS_FLAG = 0x0020
+    OPTOTRAK_QUATERN_RIGID_FLAG = 0x0040
+    OPTOTRAK_ITERATIVE_RIGID_FLAG = 0x0080
+    OPTOTRAK_SET_QUATERN_ERROR_FLAG = 0x0100
+    OPTOTRAK_SET_MIN_MARKERS_FLAG = 0x0200
+    OPTOTRAK_RIGID_ERR_MKR_SPREAD = 0x0400
+    OPTOTRAK_RETURN_QUATERN_FLAG = 0x1000
+    OPTOTRAK_RETURN_MATRIX_FLAG = 0x2000
+    OPTOTRAK_RETURN_EULER_FLAG = 0x4000
+
+    OPTOTRAK_NO_INTERPOLATION_FLAG = 0x0001
+    OPTOTRAK_FULL_DATA_FLAG = 0x0002
+    OPTOTRAK_PIXEL_DATA_FLAG = 0x0004
+    OPTOTRAK_MARKER_BY_MARKER_FLAG = 0x0008
+    OPTOTRAK_ECHO_CALIBRATE_FLAG = 0x0010
+    OPTOTRAK_BUFFER_RAW_FLAG = 0x0020
+    OPTOTRAK_NO_FIRE_MARKERS_FLAG = 0x0040
+    OPTOTRAK_STATIC_THRESHOLD_FLAG = 0x0080
+    OPTOTRAK_WAVEFORM_DATA_FLAG = 0x0100
+    OPTOTRAK_AUTO_DUTY_CYCLE_FLAG = 0x0200
+    OPTOTRAK_EXTERNAL_CLOCK_FLAG = 0x0400
+    OPTOTRAK_EXTERNAL_TRIGGER_FLAG = 0x0800
+    OPTOTRAK_GET_NEXT_FRAME_FLAG = 0x2000
+
+    # * The following flags are set by the OPTOTRAK system itself.
+    # * They indicate (1) if the system has revision D/E Sensors,
+    # *               (2) if the system can perform real-time rigid bodies.
+    # *               (3) if the markers are on in the system.
+    OPTOTRAK_REVISIOND_FLAG = 0x80000000
+    OPTOTRAK_RIGID_CAPABLE_FLAG = 0x08000000
+    OPTOTRAK_MARKERS_ACTIVE = 0x04000000
+
+    # * Definitions for mode
+    OPTOTRAK_NOTHING_MODE = 0 #    No data generation
+    OPTOTRAK_IDLING_MODE = 1 #   Raw data generation in progress
+    OPTOTRAK_GENERATING_MODE = 2 #    Reconstructed data generation in progress
+    OPTOTRAK_COLLECTING_MODE = 3 #    Data collection in progress
+
+    DEFAULT_LINK_ADDRESS = 784
+
+    # * The error codes that exist
+    OPTO_NO_ERROR_CODE = 0
+    OPTO_SYSTEM_ERROR_CODE = 1000
+    OPTO_USER_ERROR_CODE = 2000
+
+    # * Flags for controlling the setup of the message passing layer on the
+    # * PC side.
+    OPTO_LOG_ERRORS_FLAG = 0x0001
+    OPTO_SECONDARY_HOST_FLAG = 0x0002
+    OPTO_ASCII_RESPONSE_FLAG = 0x0004
+    OPTO_LOG_MESSAGES_FLAG = 0x0008
+    OPTO_LOG_DEBUG_FLAG = 0x0010
+
+    # * Constants for raw files which can be converted.
+    OPTOTRAK_RAW = 1
+    ANALOG_RAW = 2
+
+    # * Constants for modes in which files can be opened.
+    OPEN_READ = 1
+    OPEN_WRITE = 2
+
+    # * Maximum constants for the processes we will have to keep track
+    # * of in the optoappl software.  Make room for one address per node,
+    # * and an extra for our data proprietor.
+    MAX_OPTOTRAKS = 1
+    MAX_DATA_PROPRIETORS = 1
+    MAX_ODAUS = 4
+    MAX_PROCESS_ADDRESSES = (64 + 1)
+
+    # * Constants for keeping track of whick process the application wants to
+    # * communicate with.
+    # * SCO-00-0001: Added data buffer overwrite flag.
+    OPTOTRAK = 0
+    DATA_PROPRIETOR = 1
+    ODAU1 = 2
+    ODAU2 = 3
+    ODAU3 = 4
+    ODAU4 = 5
+    SENSOR_PROP1 = 6
+    OPTOTRAK_DATA_BUFFER_OVERWRITE_FLAG = 0x8000
+
+    # * Flags for controlling the put message modules.
+    OPTO_PROCESS_BITS = 0x007F
+    OPTO_NO_REPLY_FLAG = 0x0080
+
+    OPTO_LIB_POLL_REAL_DATA = 0x0001
+    OPTO_CONVERT_ON_HOST = 0x0002
+    OPTO_RIGID_ON_HOST = 0x0004
+    OPTO_USE_INTERNAL_NIF = 0x0008
+
+    MAX_ERROR_STRING_LENGTH = 2047

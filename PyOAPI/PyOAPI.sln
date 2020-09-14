@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2012 for Windows Desktop
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BoostTest", "BoostTest\BoostTest.vcxproj", "{367DE70B-197E-415B-84E1-9538E224E4E1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibPyNDI", "LibPyNDI\LibPyNDI.vcxproj", "{590CD3A5-CE0F-4B0F-859E-E1507A807B98}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FrameDropTest", "FrameDropTest\FrameDropTest.vcxproj", "{33D1249F-B705-4D67-9705-5546CB8140D6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{367DE70B-197E-415B-84E1-9538E224E4E1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{367DE70B-197E-415B-84E1-9538E224E4E1}.Debug|Win32.Build.0 = Debug|Win32
+		{367DE70B-197E-415B-84E1-9538E224E4E1}.Release|Win32.ActiveCfg = Release|Win32
+		{367DE70B-197E-415B-84E1-9538E224E4E1}.Release|Win32.Build.0 = Release|Win32
+		{590CD3A5-CE0F-4B0F-859E-E1507A807B98}.Debug|Win32.ActiveCfg = Debug|Win32
+		{590CD3A5-CE0F-4B0F-859E-E1507A807B98}.Debug|Win32.Build.0 = Debug|Win32
+		{590CD3A5-CE0F-4B0F-859E-E1507A807B98}.Release|Win32.ActiveCfg = Release|Win32
+		{590CD3A5-CE0F-4B0F-859E-E1507A807B98}.Release|Win32.Build.0 = Release|Win32
+		{33D1249F-B705-4D67-9705-5546CB8140D6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{33D1249F-B705-4D67-9705-5546CB8140D6}.Debug|Win32.Build.0 = Debug|Win32
+		{33D1249F-B705-4D67-9705-5546CB8140D6}.Release|Win32.ActiveCfg = Release|Win32
+		{33D1249F-B705-4D67-9705-5546CB8140D6}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,8 @@
+/temp/
+*.user
+*.pyc
+*.pyo
+*.pkl
+*.vrb
+*.fls
+oapi.dll

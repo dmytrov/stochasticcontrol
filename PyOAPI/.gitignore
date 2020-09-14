@@ -1,0 +1,7 @@
+Release/
+Debug/
+ipch/
+*.filters
+*.user
+pyndi.pyd
+

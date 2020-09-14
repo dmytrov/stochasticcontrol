@@ -1,0 +1,33 @@
+\tikzstyle{solidarrow} = [arrows={-Stealth[length=8pt]}]
+\tikzstyle{dashedarrow} = [solidarrow, dashed]
+\tikzstyle{paramnode} = [circle, fill=black, scale=0.5]
+
+\tikzset{mega thick/.style={line width=2pt}}
+
+\tikzstyle{latent} = [circle,fill=white,draw=black,inner sep=1pt,
+minimum size=25pt, font=\fontsize{10}{10}\selectfont, node distance=1]
+% \tikzstyle{latentsmall} = [circle,fill=white,draw=black,inner sep=0pt,
+%  minimum size=25pt, font=\fontsize{5}{5}\selectfont, node distance=1]
+\tikzstyle{latentsmall} = [latent]
+
+\tikzstyle{platecaptionnoposition} = [caption, node distance=0, inner sep=0pt]
+\tikzstyle{topright} = [platecaptionnoposition, above left=5pt and 0pt of #1.north east] 
+\tikzstyle{bottomright} = [platecaptionnoposition, below left=5pt and 0pt of #1.south east] 
+
+% \plateex [options] {name} {fitlist} {position} {caption}
+\newcommand{\plateex}[5][]{ %
+	\node[wrap=#3] (#2-wrap) {}; %
+	\node[#4=#2-wrap] (#2-caption) {#5}; % 
+	\node[plate=(#2-wrap)(#2-caption), #1] (#2) {}; %
+}
+
+% \edgeex [options] {inputs} {outputs}
+\newcommand{\edgeex}[3][solidarrow]{ %
+	% Connect all nodes #2 to all nodes #3.
+	\foreach \x in {#2} { %
+		\foreach \y in {#3} { %
+			\path (\x) edge [->,#1] (\y) ;%
+			%\draw[->,#1] (\x) -- (\y) ;%
+		} ;
+	} ;
+}

@@ -1,0 +1,349 @@
+\documentclass[xcolor=svgnames,table]{beamer}
+%\usepackage{movie15}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{multimedia}
+\usepackage{hyperref}
+\usepackage{ifthen}
+\usepackage{etex}
+\usepackage{tikz} 
+\usepackage{pgfplots}
+\usepackage{filecontents}
+\usepackage{xcolor}
+\usepackage[]{algorithm2e}
+\usepackage[font=footnotesize,labelformat=empty,
+            justification=raggedright,
+%            singlelinecheck=false
+  ]{caption}
+\usetikzlibrary{scopes}
+\usetikzlibrary{arrows}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{patterns}
+\usetikzlibrary{bayesnet}
+
+\usetikzlibrary{arrows}
+\usetikzlibrary{shapes,arrows,chains}
+\usetikzlibrary{intersections}
+\usetikzlibrary[calc]
+
+\input{./tikzpictures/bayesnetex.tex}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand*{\colormapmin}{0}%
+\newcommand*{\colormapmax}{1}%
+\newcommand{\colored}[1]{%
+  \pgfmathsetmacro\y{100.0*(#1-\colormapmin)/(\colormapmax-\colormapmin)}
+  \edef\temp{\noexpand\cellcolor{green!\y!red!30!white}}\temp #1
+}%
+
+\tikzset{
+    %Define standard arrow tip
+    >=stealth',
+    %Define style for boxes
+    punkt/.style={
+           rectangle,
+           rounded corners,
+           draw=black, very thick,
+           text width=6.5em,
+           minimum height=2em,
+           text centered},
+    % Define arrow style
+    pil/.style={
+           ->,
+           thick,
+           shorten <=2pt,
+           shorten >=2pt,}
+}
+
+\newcommand{\ve}[1]{\mathbf{#1}}
+\newcommand{\real}{\mathbb{R}}
+
+
+\usetheme{Darmstadt}
+\title{Estimating policy with Variational Bayes \\ without much pain}
+\subtitle{}
+\institute{Theoretical Neuroscience lab \\ Philipps-Universit\"{a}t Marburg}
+\author[Dmytro Velychko]{Dmytro Velychko\\{\small Dr. Dominik Endres}}
+\date{Last edited: \today}
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\titlepage
+\end{frame}	
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Overview}
+\tableofcontents
+\end{frame}
+
+\section{Problem}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Supervised policy estimation}
+\begin{center}
+\scalebox{0.5}{
+  \input{./tikzpictures/markov_chain}
+}
+\end{center}
+Supervised learning of policy.\\
+Full Bayesian treatment with Monte Carlo Variational Bayes.
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{Why Bayesian? Bayesian Model Comparison}
+Data $X$,  model $M_i$, parameters $\theta$
+\begin{align}
+    p(M_i | X) &= \frac{1}{Z_M} \int p(X | \theta, M_i) p(\theta | M_i,) p(M_i) d\theta \\
+    \frac{p(M_a | X)}{p(M_b | X)} &= \frac{p(M_a) \int p(X | \theta, M_a) p(\theta | M_a)d\theta  }{p(M_b) \int p(X | \theta, M_b) p(\theta | M_b)d\theta} \\
+    p(X | M_i) &= p(M_b) \int p(X | \theta, M_i) p(\theta | M_i)d\theta
+\end{align}
+\end{frame}
+
+
+
+
+\section{Monte Carlo integration}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Jensen's inequality}
+\begin{center}
+\begin{tikzpicture}[scale=0.5,
+    thick,
+    >=stealth']
+\coordinate (O) at (0,0);
+  \draw[->] (-0.3,0) -- (8,0) coordinate[label = {below:$x$}] (xmax);
+  \draw[->] (0,-0.3) -- (0,5) coordinate[label = {right:$f(x)$}] (ymax);
+
+  \draw[red, name path=x] (0.3,1.0) -- (6.7,4.7);
+  \draw[name path=y] plot[smooth] coordinates {(-0.3,2) (2,1.1) (4,2.5) (6,5)};
+
+  \scope[name intersections = {of = x and y, name = i}]
+   \draw [dashed] (i-1) -- (i-1 |- O) node[label = {below:$x_0$}] {};
+   \draw [dashed] (i-2) -- (i-2 |- O) node[label = {below:$x_1$}] {};
+  \endscope
+\end{tikzpicture}
+\end{center}
+\only<1> {
+For any convex function $f$:
+  \begin{align}
+    f(E(X)) \leq E(f(X))
+  \end{align}
+}
+\only<2> {
+In integral form: 
+\begin{align}
+  f\left(\int g(x) p(x) dx \right) \leq \int f(g(x)) p(x) dx
+\end{align}
+}
+For concave functions this inequality reverses
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{Why Bayesian? Bayesian Model Comparison}
+Data $X$,  model $M_i$, parameters $\theta$
+\begin{align}
+    p(M_i | X) &= \frac{1}{Z_M} \int p(X | \theta, M_i) p(\theta | M_i,) p(M_i) d\theta \\
+    \frac{p(M_a | X)}{p(M_b | X)} &= \frac{p(M_a) \int p(X | \theta, M_a) p(\theta | M_a)d\theta  }{p(M_b) \int p(X | \theta, M_b) p(\theta | M_b)d\theta} \\
+    p(X | M_i) &= p(M_b) \int p(X | \theta, M_i) p(\theta | M_i)d\theta
+\end{align}
+Using Jensen's inequality, for any model $M_i$:
+\begin{align}
+    p(X) &= \int p(X | \theta) p(\theta)d\theta \\
+    p(X) &= \int p(X, \theta) d\theta = \exp \log \int q(\theta | X) \frac{p(X, \theta)}{q(\theta | X)} d\theta\\ 
+    \log p(X) &\geq \int q(\theta | X) \log \frac{p(X, \theta)}{q(\theta | X)} d\theta = ELBO
+\end{align}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Monte Carlo integration}
+Evaluate the function we want to integrate in uniformly random positions to approximate the integral
+\begin{align}
+\int f(x) dx \approx \frac{1}{N} \sum_{i=1}^N f(\sigma_i)
+\end{align}
+Variance decreases with number of random points. Think of Bayesian evidence accumulaition.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Monte Carlo integration. Expectations}
+Estimating an expectation:
+\begin{align}
+\sigma_i &\sim p(x) \\
+\int f(x) p(x) dx &\approx \frac{1}{N} \sum_{i=1}^N f(\sigma_i)
+\end{align}
+What if we can't sample efficiently from p(x)? Use a simple distribution $q$, weight the samples
+\begin{align}
+\sigma_i &\sim q(x) \\
+\int f(x) p(x) dx &\approx \frac{1}{N} \sum_{i=1}^N f(\sigma_i) \frac{p(\sigma_i)} {q(\sigma_i)}
+\end{align}
+\end{frame}
+
+\section{Variational Bayes}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Variational Bayes}
+Recall: 
+\begin{align}
+    ELBO &= \int q(\theta | X) \log \frac{p(X, \theta)}{q(\theta | X)} d\theta \\
+    &= \int q(\theta | X) \log p(X, \theta) d\theta - \int q(\theta | X) \log q(\theta | X) d\theta
+\end{align}
+We want to optimize ELBO w.r.t. parameters $\phi$ of $q_{\phi}(\theta | X)$
+\begin{align}
+    \frac{\partial ELBO}{\partial \phi} &= \frac{\partial}{\partial \phi} \left(  \int q(\theta | X) \log p(X, \theta) d\theta - \int q(\theta | X) \log q(\theta | X) d\theta \right) \\
+    &\approx \frac{\partial}{\partial \phi} \frac{1}{N} \sum_{i=1}^N \left(  \log p(X, \theta_{\phi i}) - \log q(\theta_{\phi i} | X) \right) 
+\end{align}
+
+where $\theta_{\phi i} \sim q_{\phi}(\theta | X)$
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Inference with MC Variational Bayes}
+
+\begin{algorithm}[H]
+ \KwData{observed data}
+ \KwResult{variational parameters, ELBO}
+ \Repeat{convergence}{
+   Draw N samples from $q_{\phi}(\theta | X)$ \;
+   Approximate ELBO with Monte Carlo integration \;
+   Compute $\frac{\partial ELBO}{\partial \phi}$ \;
+   update parameters $\phi$ \;
+ }
+\end{algorithm}
+\end{frame}
+
+\section{Policy estimation}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Supervised policy estimation}
+\begin{center}
+\scalebox{0.5}{
+  \input{./tikzpictures/markov_chain}
+}
+\end{center}
+Supervised learning of policy.\\
+Full Bayesian treatment with Monte Carlo Variational Bayes.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Linear policy estimation}
+Assumptions:
+\begin{enumerate}
+  \item control is linear w.r.t. some features (previous control, current speed, vector to the target, vector to the optimal trajectory, constant...)
+  \item control noise is scaled with signal
+\end{enumerate}
+
+\end{frame}
+
+\section{Min jerk trajectoy}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Min jerk optimal trajectory}
+Control cost:
+\begin{align}
+l(x, t) &= l(x^{(3)}, t) = x^{(3)}(t)^T W_i x^{(3)}(t) &&\text{cubic cost} \\
+L(x) 	&= \int_0^T  l(x, t) dt = \int_0^T x^{(3)}(t)^T W_i x^{(3)}(t) &&\text{full cost} 
+\end{align}
+
+Boundary conditions: $x(0), x'(0), x(T), x'(T)$
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Euler-Lagrange equation}
+Find stationary solutions f the following functional:
+\begin{align}
+L(x) = \int_a^b l(t, x(t), x'(t)) dt
+\end{align}
+
+Optimal $x^*$ is a solution of the following Euler-Lagrange differential equation:
+\begin{align}
+\frac{\partial L}{\partial x} - \frac{d}{dt} \left( \frac{\partial L}{\partial x'} \right) = 0
+\end{align}
+
+When the functional depends on higher order derivatives
+\begin{align}
+L(x) = \int_a^b l(t, x(t), \{x^{(i)}(t), i \in 1 \ldots N\}) dt
+\end{align}
+
+the general form of the Euler-Lagrange equation is:
+\begin{align}
+\frac{\partial L}{\partial x} + \sum_{i=1}^N (-1)^N \frac{d}{dt} \left( \frac{\partial L}{\partial x^{(i)}} \right) = 0
+\end{align}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Min jerk optimal trajectory}
+Cost function reads:
+\begin{align}
+(x, t) &= l(x^{(3)}, t) = x^{(3)}(t)^T W_i x^{(3)}(t) &&\text{cubic cost} \\
+L(x) 	&= \int_0^T  l(x, t) dt = \int_0^T x^{(3)}(t)^T W_i x^{(3)}(t) &&\text{full cost} 
+\end{align}
+
+Corresponding Euler-Lagrange equation is:
+\begin{align}
+2W_3x^{(6)}(t) = 0
+\end{align}
+
+which has a polynomial as a solution:
+\begin{align}
+x(t) &= a_5 t^5 + a_4 t^4 + a_3 t^3 + a_2 t^2 + a_1 t + a_0
+\end{align}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Toy data}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{./plots/toy/training.pdf}
+\end{center}
+Min-jerk trajectories with different boundary conditions
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Toy data - sampling from the learned model}
+\begin{center}
+  \only<1> {\includegraphics[width=0.7\textwidth]{./plots/toy/disturbed-sampled-(1).pdf}}
+  \only<2> {\includegraphics[width=0.7\textwidth]{./plots/toy/disturbed-sampled-(6).pdf}}
+  \only<3> {\includegraphics[width=0.7\textwidth]{./plots/toy/disturbed-sampled-(15).pdf}}
+\end{center}
+\end{frame}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Real data}
+\begin{itemize}
+  \item Too much variability
+  \item No notion of global task in case of supervised policy learning
+  \item Need contracting prior to constrain the policy space
+\end{itemize}
+\end{frame}
+
+
+\end{document}

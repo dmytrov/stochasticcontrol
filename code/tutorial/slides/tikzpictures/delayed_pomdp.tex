@@ -1,0 +1,101 @@
+
+\begin{tikzpicture}
+
+\tikzstyle{mylatent} = [circle,fill=white,draw=black,inner sep=1pt,
+minimum size=40pt, thick]
+
+\node[mylatent] (xt0) {$x_t$};
+\node[mylatent, right=1 cm of xt0] (xt1) {$x_{t+1}$};
+\node[mylatent, right=1 cm of xt1] (xt2) {$x_{t+2}$};
+\node[mylatent, right=2 cm of xt2] (xtn) {$x_{t+n}$};
+\node[mylatent, right=1 cm of xtn] (xtn1) {$x_{t+n+1}$};
+\node[mylatent, right=1 cm of xtn1] (xtn2) {$x_{t+n+2}$};
+
+
+\edge {xt0} {xt1};
+\edge {xt1} {xt2}; 
+\edge {xtn} {xtn1}; 
+\edge {xtn1} {xtn2};
+\draw [dashed, ->] (xt2) edge (xtn);
+
+%\node[mylatent, below=1 cm of xt0] (xbt0) {$\bar{x}_{t}$};
+%\node[mylatent, right=1 cm of xbt0] (xht1) {$\hat{x}_{t+1}$};
+%\node[mylatent, right=1 cm of xht1] (xht2) {$\hat{x}_{t+2}$};
+%\node[mylatent, right=2 cm of xht2] (xhtn) {$\hat{x}_{t+n}$};
+%\node[mylatent, right=1 cm of xhtn] (xhtn1) {$\hat{x}_{t+n+1}$};
+%\node[mylatent, right=1 cm of xhtn1] (xhtn2) {$\hat{x}_{t+n+2}$};
+
+
+\node[mylatent, below=1.5 cm of xt0] (xht0) {$\hat{x}_{t}$};
+\node[mylatent, right=1 cm of xht0] (xht1) {$\hat{x}_{t+1}$};
+\node[mylatent, right=1 cm of xht1] (xht2) {$\hat{x}_{t+2}$};
+\node[mylatent, right=2 cm of xht2] (xhtn) {$\hat{x}_{t+n}$};
+\node[mylatent, right=1 cm of xhtn] (xhtn1) {$\hat{x}_{t+n+1}$};
+\node[mylatent, right=1 cm of xhtn1] (xhtn2) {$\hat{x}_{t+n+2}$};
+
+\edge {xht0} {xht1};
+\edge {xht1} {xht2}; 
+\edge {xhtn} {xhtn1}; 
+\edge {xhtn1} {xhtn2};
+\draw [dashed, ->] (xht2) edge (xhtn);
+
+\edge {xt0} {xhtn};
+\edge {xt1} {xhtn1}; 
+\edge {xt2} {xhtn2}; 
+
+
+\node[mylatent, below=1 cm of xht0] (ut0) {$u_t$};
+\node[mylatent, right=1 cm of ut0] (ut1) {$u_{t+1}$};
+\node[mylatent, right=1 cm of ut1] (ut2) {$u_{t+2}$};
+\node[mylatent, right=2 cm of ut2] (utn) {$u_{t+n}$};
+\node[mylatent, right=1 cm of utn] (utn1) {$u_{t+n+1}$};
+\node[mylatent, right=1 cm of utn1] (utn2) {$u_{t+n+2}$};
+
+
+\node[mylatent, below=1.5 cm of ut0] (tht0) {$\theta_t$};
+\node[mylatent, right=1 cm of tht0] (tht1) {$\theta_{t+1}$};
+\node[mylatent, right=1 cm of tht1] (tht2) {$\theta_{t+2}$};
+\node[mylatent, right=2 cm of tht2] (thtn) {$\theta_{t+n}$};
+\node[mylatent, right=1 cm of thtn] (thtn1) {$\theta_{t+n+1}$};
+\node[mylatent, right=1 cm of thtn1] (thtn2) {$\theta_{t+n+2}$};
+
+\node [left=0.5cm of xt0] {state};
+\node [left=0.5cm of xht0] {sensory estimation};
+\node [left=0.5cm of ut0] {control};
+\node [left=0.5cm of tht0] {parameters};
+
+
+\edge {xht0} {ut0};
+\edge {xht1} {ut1}; 
+\edge {xhtn} {utn};
+\edge {xht2} {ut2}; 
+\edge {xhtn1} {utn1};
+\edge {xhtn2} {utn2};
+
+\edge {tht0} {ut0};
+\edge {tht1} {ut1}; 
+\edge {thtn} {utn};
+\edge {tht2} {ut2}; 
+\edge {thtn1} {utn1};
+\edge {thtn2} {utn2};
+
+
+\edge {ut0} {xt1};
+\edge {ut1} {xt2};
+\edge {utn} {xtn1};
+\edge {utn1} {xtn2};
+
+\edge {tht0} {xt1};
+\edge {tht1} {xt2};
+\edge {thtn} {xtn1};
+\edge {thtn1} {xtn2};
+
+
+\edge {tht0} {tht1};
+\edge {tht1} {tht2}; 
+\edge {thtn} {thtn1}; 
+\edge {thtn1} {thtn2};
+\draw [dashed, ->] (tht2) edge (thtn);
+
+\end{tikzpicture}
+
